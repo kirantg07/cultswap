@@ -9,6 +9,8 @@ public class CreateListingResponse {
     public CreateListingResponse(
             Long id,
             String membershipType,
+            String membershipCategory,
+            String membershipDuration,
             LocalDate purchaseDate,
             LocalDate expiryDate,
             BigDecimal askingPrice,
@@ -20,6 +22,8 @@ public class CreateListingResponse {
 
         this.id = id;
         this.membershipType = membershipType;
+        this.membershipCategory = membershipCategory;
+        this.membershipDuration = membershipDuration;
         this.purchaseDate = purchaseDate;
         this.expiryDate = expiryDate;
         this.askingPrice = askingPrice;
@@ -40,6 +44,8 @@ public class CreateListingResponse {
     private String documentVerificationStatus;
     private String transferEligibilityStatus;
     private OffsetDateTime createdAt;
+    private String membershipCategory;
+    private String membershipDuration;
 
     public Long getId() {
         return id;
@@ -119,5 +125,13 @@ public class CreateListingResponse {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getMembershipCategory() {
+        return membershipCategory;
+    }
+
+    public String getMembershipDuration() {
+        return membershipDuration;
     }
 }

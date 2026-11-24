@@ -1,5 +1,7 @@
 package com.cultswap.backend.dto;
 
+import com.cultswap.backend.service.eligibility.MembershipCategory;
+import com.cultswap.backend.service.eligibility.MembershipDuration;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -28,6 +30,12 @@ public class CreateListingRequest implements ListingDateFields {
     @NotBlank
     @Size(max = 100)
     private String city;
+
+    @NotNull
+    private MembershipCategory membershipCategory;
+
+    @NotNull
+    private MembershipDuration membershipDuration;
 
     public String getCity() {
         return city;
@@ -67,5 +75,21 @@ public class CreateListingRequest implements ListingDateFields {
 
     public void setMembershipType(String membershipType) {
         this.membershipType = membershipType;
+    }
+
+    public MembershipCategory getMembershipCategory() {
+        return membershipCategory;
+    }
+
+    public void setMembershipCategory(MembershipCategory membershipCategory) {
+        this.membershipCategory = membershipCategory;
+    }
+
+    public MembershipDuration getMembershipDuration() {
+        return membershipDuration;
+    }
+
+    public void setMembershipDuration(MembershipDuration membershipDuration) {
+        this.membershipDuration = membershipDuration;
     }
 }

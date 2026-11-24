@@ -11,12 +11,15 @@ import com.cultswap.backend.exception.TransferRequestException;
 import com.cultswap.backend.repository.MembershipListingRepository;
 import com.cultswap.backend.repository.TransferRequestRepository;
 import com.cultswap.backend.repository.UserRepository;
+import com.cultswap.backend.service.eligibility.EligibilityResponse;
+import com.cultswap.backend.service.eligibility.TransferEligibilityService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,15 +28,18 @@ public class MembershipListingService {
     private final MembershipListingRepository membershipListingRepository;
     private final UserRepository userRepository;
     private final TransferRequestRepository transferRequestRepository;
+    private final TransferEligibilityService transferEligibilityService;
 
     public MembershipListingService(
             MembershipListingRepository membershipListingRepository,
             UserRepository userRepository,
-            TransferRequestRepository transferRequestRepository
+            TransferRequestRepository transferRequestRepository,
+            TransferEligibilityService transferEligibilityService
     ) {
         this.membershipListingRepository = membershipListingRepository;
         this.userRepository = userRepository;
         this.transferRequestRepository = transferRequestRepository;
+        this.transferEligibilityService = transferEligibilityService;
     }
 
     public User getSeller(Long sellerId) {
@@ -49,6 +55,8 @@ public class MembershipListingService {
 
         listing.setSeller(seller);
         listing.setMembershipType(request.getMembershipType());
+        listing.setMembershipCategory(request.getMembershipCategory().name());
+        listing.setMembershipDuration(request.getMembershipDuration().name());
         listing.setPurchaseDate(request.getPurchaseDate());
         listing.setExpiryDate(request.getExpiryDate());
         listing.setAskingPrice(request.getAskingPrice());
@@ -56,13 +64,28 @@ public class MembershipListingService {
 
         listing.setListingStatus("PENDING_VERIFICATION");
         listing.setDocumentVerificationStatus("PENDING");
-        listing.setTransferEligibilityStatus("UNKNOWN");
+        listing.setTransferUsed(false);
+
+        EligibilityResponse eligibilityResponse =
+                transferEligibilityService.evaluateEligibility(
+                        request.getPurchaseDate(),
+                        request.getMembershipDuration(),
+                        request.getExpiryDate(),
+                        listing.getTransferUsed(),
+                        LocalDate.now()
+                );
+
+        listing.setTransferEligibilityStatus(
+                eligibilityResponse.getStatus().name()
+        );
 
         MembershipListing savedListing = membershipListingRepository.save(listing);
 
         return new CreateListingResponse(
                 savedListing.getId(),
                 savedListing.getMembershipType(),
+                savedListing.getMembershipCategory(),
+                savedListing.getMembershipDuration(),
                 savedListing.getPurchaseDate(),
                 savedListing.getExpiryDate(),
                 savedListing.getAskingPrice(),

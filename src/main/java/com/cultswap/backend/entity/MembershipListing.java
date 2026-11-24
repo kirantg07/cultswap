@@ -54,6 +54,15 @@ public class MembershipListing {
     @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime updatedAt;
 
+    @Column(name = "transfer_used")
+    private Boolean transferUsed;
+
+    @Column(name = "membership_duration", length = 30)
+    private String membershipDuration;
+
+    @Column(name = "membership_category", length = 30)
+    private String membershipCategory;
+
     public Long getId() {
         return id;
     }
@@ -158,4 +167,27 @@ public class MembershipListing {
         this.updatedAt = updatedAt;
     }
 
+    public String getMembershipDuration() {
+        return membershipDuration;
+    }
+
+    public void setMembershipDuration(String membershipDuration) {
+        this.membershipDuration = membershipDuration;
+    }
+
+    public Boolean getTransferUsed() {
+        return transferUsed;
+    }
+
+    public void setTransferUsed(Boolean transferUsed) {
+        this.transferUsed = transferUsed;
+    }
+
+    public String getMembershipCategory() {
+        return membershipCategory;
+    }
+
+    public void setMembershipCategory(String membershipCategory) {
+        this.membershipCategory = membershipCategory;
+    }
 }
